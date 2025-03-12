@@ -6,6 +6,7 @@ from nicegui import ui
 class Message:
     user_id: str
     text: str
+    name: str | None = None
 
     @property
     def display_name(self):
@@ -14,7 +15,7 @@ class Message:
         elif self.user_id == "human_agent":
             return "Human Agent"
         else:
-            return f"End User {self.user_id}"
+            return f"{self.name or "End User"} ({self.user_id})"
 
 
 @dataclass
@@ -41,8 +42,8 @@ class ChatUI:
 
         chat_scroll.scroll_to(percent=100)
 
-    def add_message(self, user_id: str, text: str):
-        self._messages.append(Message(user_id, text))
+    def add_message(self, user_id: str, text: str, name: str | None = None):
+        self._messages.append(Message(user_id, text, name))
         self.message_list_element.refresh()
 
     def send_notification(self, text: str):

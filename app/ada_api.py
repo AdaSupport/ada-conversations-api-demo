@@ -22,7 +22,7 @@ def _colorize(status_code: int, text: str) -> str:
     )
 
 
-async def send_user_message(conversation_id: str, user_id: str, text: str):
+async def send_user_message(conversation_id: str, user_id: str, display_name: str, text: str):
     """Send an end user message to Ada"""
 
     print("Sending message...")
@@ -31,7 +31,7 @@ async def send_user_message(conversation_id: str, user_id: str, text: str):
             f"{ADA_BASE_URL}/api/v2/conversations/{conversation_id}/messages",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
             json={
-                "author": {"role": "end_user", "id": {"end_user_id": user_id}},
+                "author": {"role": "end_user", "display_name": display_name, "id": {"end_user_id": user_id}},
                 "content": {"type": "text", "body": text},
             },
         ) as response:

@@ -29,6 +29,10 @@ async def index():
         end_button.disable()
         await ada_api.end_conversation(conversation_id)
 
+    async def _reset():
+        app.storage.user.clear()
+        ui.navigate.reload()
+
     user_id = app.storage.user.get("end_user_id")
     display_name = app.storage.user.get("display_name", _generate_name())
 
@@ -52,3 +56,4 @@ async def index():
             .on("keydown.enter", _send)
         )
         end_button = ui.button("End Chat", on_click=_end_chat, color="red", icon="exit_to_app")
+        ui.button("Reset", on_click=_reset, color="blue", icon="refresh")

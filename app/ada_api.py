@@ -28,7 +28,7 @@ async def send_user_message(conversation_id: str, user_id: str, text: str):
     print("Sending message...")
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            f"{ADA_BASE_URL}/v2/conversations/{conversation_id}/messages",
+            f"{ADA_BASE_URL}/api/v2/conversations/{conversation_id}/messages",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
             json={
                 "author": {"role": "end_user", "id": {"end_user_id": user_id}},
@@ -52,7 +52,7 @@ async def start_new_conversation(user_id: str | None = None):
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            f"{ADA_BASE_URL}/v2/conversations",
+            f"{ADA_BASE_URL}/api/v2/conversations",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
             json=request_body,
         ) as response:
@@ -70,7 +70,7 @@ async def end_conversation(conversation_id: str):
     print("Ending conversation...")
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            f"{ADA_BASE_URL}/v2/conversations/{conversation_id}/end",
+            f"{ADA_BASE_URL}/api/v2/conversations/{conversation_id}/end",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
         ) as response:
             body = await response.json()

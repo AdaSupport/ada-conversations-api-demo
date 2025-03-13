@@ -57,3 +57,5 @@ async def index():
         )
         end_button = ui.button("End Chat", on_click=_end_chat, color="red", icon="exit_to_app")
         ui.button("Reset", on_click=_reset, color="blue", icon="refresh")
+
+    await ada_api.update_user(user_id, *display_name.split())

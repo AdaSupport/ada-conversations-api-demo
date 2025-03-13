@@ -77,3 +77,20 @@ async def end_conversation(conversation_id: str):
             print(_colorize(response.status, json.dumps(body)))
 
             response.raise_for_status()
+
+
+async def update_user(end_user_id: str, first_name: str, last_name: str):
+    """Update an end user's display name"""
+
+    print("Updating end user...")
+
+    async with aiohttp.ClientSession() as session:
+        async with session.patch(
+            f"{ADA_BASE_URL}/api/v2/end-users/{end_user_id}",
+            headers={"Authorization": f"Bearer {ADA_API_KEY}"},
+            json={"profile": {"first_name": first_name, "last_name": last_name}},
+        ) as response:
+            body = await response.json()
+            print(_colorize(response.status, json.dumps(body)))
+
+            response.raise_for_status()

@@ -58,7 +58,7 @@ _global_batch_task: asyncio.Task | None = None
 _global_batch_lock = asyncio.Lock()
 
 
-@router.post("/message")
+@router.post("/message", status_code=204)
 async def post_message(msg: PostMessageRequest | GenericEventRequest, request: Request):
     print(f"\033[94mReceived webhook: {msg.model_dump_json()}\033[0m")
 
@@ -76,7 +76,7 @@ async def post_message(msg: PostMessageRequest | GenericEventRequest, request: R
     if isinstance(msg, PostMessageRequest):
         await push_message_to_queue(msg)
 
-    return None, 204
+    return None
 
 
 async def push_message_to_queue(msg: PostMessageRequest):

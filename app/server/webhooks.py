@@ -17,6 +17,7 @@ WEBHOOK_SECRET = os.environ["WEBHOOK_SECRET"]
 class PostMessageAuthor(BaseModel):
     display_name: str
     role: str
+    avatar: str
     id: dict[str, str]
 
 

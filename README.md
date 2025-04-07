@@ -3,7 +3,7 @@
 This is a demo project providing a minimal implementation of a frontend to interact with an [Ada](https://ada.cx) bot via the Ada Conversations API.
 
 # How to Run this Demo
-## Pre-Prodution Requirements
+## Pre-Production Requirements
 
 These are things that won't need to be done once everything is GA, but for now they do.
 
@@ -29,7 +29,7 @@ pip install -e .
 
 ## Network Setup
 
-Ada needs to be able to reach the machine this demo is running on via webhook. The simplest way to manage this locally is with something like [ngrok](https://https://ngrok.com/). There are other possible ways of achieiving this but for simplicity we'll assume use of ngrok:
+Ada needs to be able to reach the machine that this demo is running on via webhook. The simplest way to manage this locally is with something like [ngrok](https://https://ngrok.com/). There are other possible ways of achieving this but for simplicity we'll assume use of ngrok:
 
 In a new terminal window, start an ngrok http tunnel to port `8080` 
 
@@ -47,15 +47,13 @@ Navigate to the Ada dashboard and go to `Platform -> APIs` and create a new API 
 
 ### Webhook Configuration
 
-Again in the Ada dashboard, go to `Platform -> Webhooks` and add a new end point. The endpoint URL should be the forwarding address from the `Network Setup` section above *PLUS* `/webhooks/message` appended to it (if using ngrok, then possibly something like `https://1234-56-78-90.ngrok-free.app/webhooks/message`). In the "Subscribe to events" section, make sure you subscribe to all `v1.conversation` events.
+Again in the Ada dashboard, go to `Platform -> Webhooks` and add a new endpoint. The endpoint URL should be the forwarding address from the `Network Setup` section above *PLUS* `/webhooks/message` appended to it (if using ngrok, then possibly something like `https://1234-56-78-90.ngrok-free.app/webhooks/message`). In the "Subscribe to events" section, make sure you subscribe to all `v1.conversation` events.
 
 Once created, copy and save the `Signing Secret` value.
 
 ### Custom Channel Creation
 
-⚠️ This is sub-production at this point. In the future this part will be nicer ⚠️
-
-We need to create a custom channel. At the point of writing the only way to do this against production is via a cURL command:
+We need to create a custom channel. To create a custom channel in production, we can use the following cURL command:
 
 ```
 curl -X 'POST' \
@@ -71,24 +69,7 @@ curl -X 'POST' \
 }'
 ```
 
-Replace `<bot-handle>` with the handle of your bot. And replace `<ada-api-key>` with the API key generated in the section above. Run the command and note the value for the returned `id` field - this is your custom channel ID
-
-Example response:
-```
-{
-"name":"My Custom Channel",
-"description":"A custom messaging channel for my AI Agent",
-"modality":"messaging",
-"status":"active",
-"client_id":"5270fcc714fa494c052a1ade",
-"external_id":"",
-"created_at":"2025-04-04T19:05:43+00:00",
-"updated_at":"2025-04-04T19:05:43+00:00",
-"id":"61f02d3752d65ca666b44b50",
-"type":"custom",
-"metadata":{}
-}
-```
+Replace `<bot-handle>` with the handle of your bot, and `<ada-api-key>` with the API key generated in the section above. Run the command and note the value for the returned `id` field - this is your custom channel ID
 
 ## Putting It All Together
 

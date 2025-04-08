@@ -3,13 +3,6 @@
 This is a demo project providing a minimal implementation of a frontend to interact with an [Ada](https://ada.cx) bot via the Ada Conversations API.
 
 # How to Run this Demo
-## Pre-Production Requirements
-
-These are things that won't need to be done once everything is GA, but for now they do.
-
-Turn the following LaunchDarkly Feature Flags on for the bot you wish to use: `conversations-api` and `rollout-convo-api-webhooks`
-
-Other pre-production requirements in this README will be highlighted with ⚠️ signs
 
 ## Environment Setup
 

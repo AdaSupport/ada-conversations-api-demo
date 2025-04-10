@@ -115,7 +115,7 @@ async def batch_process_messages():
         )
 
 
-def push_message_to_chat(conversation_id: str, user_id: str, role: str, msg_type: str, text: str):
+def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, msg_type: str, text: str):
     """Convert a message from Ada's webhook to one that is displayed in the chat UI"""
 
     chat_ui = get_chat_ui(conversation_id)

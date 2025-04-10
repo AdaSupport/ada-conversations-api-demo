@@ -16,7 +16,7 @@ class Message:
         elif self.role == "human_agent":
             return "Human Agent"
         else:
-            return f"{self.name or "End User"} ({self.role})"
+            return f"{self.name or "End User"} ({self.user_id or self.role})"
 
 
 @dataclass
@@ -43,7 +43,7 @@ class ChatUI:
 
         chat_scroll.scroll_to(percent=100)
 
-    def add_message(self, user_id: str, role: str, text: str, name: str | None = None):
+    def add_message(self, user_id: str | None, role: str, text: str, name: str | None = None):
         self._messages.append(Message(role, text, user_id, name))
         self.message_list_element.refresh()
 

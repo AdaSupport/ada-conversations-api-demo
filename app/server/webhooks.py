@@ -15,10 +15,10 @@ WEBHOOK_SECRET = os.environ["WEBHOOK_SECRET"]
 
 
 class PostMessageAuthor(BaseModel):
-    display_name: str
+    display_name: str | None
     role: str
-    avatar: str
-    id: dict[str, str]
+    avatar: str | None
+    id: str | None
 
 
 class PostMessageContent(BaseModel):
@@ -27,32 +27,26 @@ class PostMessageContent(BaseModel):
 
 
 class PostMessageData(BaseModel):
-    id: str
-    end_user_id: str
+    message_id: str
     conversation_id: str
-    author: PostMessageAuthor
-    content: PostMessageContent
     channel_id: str
     created_at: datetime
-    updated_at: datetime
+    author: PostMessageAuthor
+    content: PostMessageContent
 
 
 class PostMessageRequest(BaseModel):
     type: Literal["v1.conversation.message"]
     data: PostMessageData
     timestamp: datetime
-    tags: list[str] | None = None
 
 
 class GenericEventRequest(BaseModel):
     type: str
     data: dict[str, Any]
     timestamp: datetime
-    tags: list[str] | None = None
-
 
 router = APIRouter(prefix="/webhooks", tags=["webhooks"])
-
 
 _global_msg_queue: list[PostMessageRequest] = []
 _global_batch_task: asyncio.Task | None = None
@@ -72,7 +66,6 @@ async def post_message(msg: PostMessageRequest | GenericEventRequest, request: R
         webhook.verify(payload, cast(dict[str, str], headers))
     except svix.WebhookVerificationError as e:
         raise HTTPException(status_code=400, detail="Bad Request") from e
-
 
     if isinstance(msg, PostMessageRequest):
         await push_message_to_queue(msg)
@@ -115,13 +108,14 @@ async def batch_process_messages():
     for msg in messages:
         push_message_to_chat(
             msg.data.conversation_id,
-            next(iter(msg.data.author.id.values())),
+            msg.data.author.id,
+            msg.data.author.role,
             msg.data.content.type,
             msg.data.content.body,
         )
 
 
-def push_message_to_chat(conversation_id: str, user_id: str, msg_type: str, text: str):
+def push_message_to_chat(conversation_id: str, user_id: str, role: str, msg_type: str, text: str):
     """Convert a message from Ada's webhook to one that is displayed in the chat UI"""
 
     chat_ui = get_chat_ui(conversation_id)
@@ -129,6 +123,6 @@ def push_message_to_chat(conversation_id: str, user_id: str, msg_type: str, text
         return
 
     if msg_type == "text":
-        chat_ui.add_message(user_id, text)
+        chat_ui.add_message(user_id, role, text)
     elif msg_type == "presence":
         chat_ui.send_notification(text)

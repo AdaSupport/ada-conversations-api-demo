@@ -2,6 +2,8 @@
 
 This is a demo project providing a minimal implementation of a frontend to interact with an [Ada](https://ada.cx) bot via the Ada Conversations API.
 
+To learn more about Ada's Conversations API visit the [developer docs](https://developers.ada.cx/reference/conversations/overview).
+
 # How to Run this Demo
 
 ## Environment Setup
@@ -85,3 +87,6 @@ python run.py
 ```
 
 and interact with your Ada bot by visiting `http://127.0.0.1:8080` 🎉
+
+> [!IMPORTANT]
+> This code is for example use only, and modifications may be needed to run this code. Additionally, pull requests and/or issues for this repository will not be monitored.

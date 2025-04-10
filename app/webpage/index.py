@@ -18,7 +18,7 @@ def _generate_name() -> str:
 async def index():
     async def _send():
         text_value = text_input.value
-        chat_ui.add_message(user_id, text_value, display_name)
+        chat_ui.add_message(user_id, "end_user", text_value, display_name)
         text_input.value = ""
         await ada_api.send_user_message(conversation_id, user_id, display_name, text_value)
 
@@ -40,7 +40,6 @@ async def index():
 
     app.storage.user["end_user_id"] = user_id
     app.storage.user["display_name"] = display_name
-
     ui.query('.nicegui-content').classes("h-screen flex flex-col w-full")
 
     chat_ui = ChatUI(user_id, conversation_id)

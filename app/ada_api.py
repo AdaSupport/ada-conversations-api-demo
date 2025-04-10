@@ -36,7 +36,7 @@ async def send_user_message(
                 "author": {
                     "role": "end_user",
                     "display_name": display_name,
-                    "id": {"end_user_id": user_id},
+                    "id": user_id,
                     "avatar": "https://gravatar.com",
                 },
                 "content": {"type": "text", "body": text},

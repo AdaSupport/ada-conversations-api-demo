@@ -4,18 +4,19 @@ from nicegui import ui
 
 @dataclass
 class Message:
-    user_id: str
+    role: str
     text: str
+    user_id: str | None = None
     name: str | None = None
 
     @property
     def display_name(self):
-        if self.user_id == "ada_ai_agent":
+        if self.role == "ada_ai_agent":
             return "AI Agent"
-        elif self.user_id == "human_agent":
+        elif self.role == "human_agent":
             return "Human Agent"
         else:
-            return f"{self.name or "End User"} ({self.user_id})"
+            return f"{self.name or "End User"} ({self.user_id or self.role})"
 
 
 @dataclass
@@ -42,8 +43,8 @@ class ChatUI:
 
         chat_scroll.scroll_to(percent=100)
 
-    def add_message(self, user_id: str, text: str, name: str | None = None):
-        self._messages.append(Message(user_id, text, name))
+    def add_message(self, user_id: str | None, role: str, text: str, name: str | None = None):
+        self._messages.append(Message(role, text, user_id, name))
         self.message_list_element.refresh()
 
     def send_notification(self, text: str):

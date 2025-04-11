@@ -6,6 +6,11 @@ To learn more about Ada's Conversations API visit the [developer docs](https://d
 
 # How to Run this Demo
 
+## Prompt for LLM Ingestion
+If you'll be using this project as the knowledge source for an LLM coding assistant, consider the following prompt:
+
+> Using this project as an example, write a simple command line script in python that will start an interactive chat with my Ada AI Agent. To receive messages from the Ada AI Agent listen on port 8080 to the path `/webhooks/message`. Messages that come from in from the Ada AI Agent should be represented on the command line chat as from 'AI Agent'. Suppress all other non-critical log messages, only showing the chat dialog between the user and the Ada AI Agent.
+
 ## Environment Setup
 
 Clone this repo and `cd` into it.
@@ -87,6 +92,7 @@ python run.py
 ```
 
 and interact with your Ada AI Agent by visiting `http://127.0.0.1:8080` 🎉
+
 
 > [!IMPORTANT]
 > This code is for example use only, and modifications may be needed to run this code. Additionally, pull requests and/or issues for this repository will not be monitored.

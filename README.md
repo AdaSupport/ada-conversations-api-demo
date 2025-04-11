@@ -2,7 +2,7 @@
 
 This is a demo project providing a minimal implementation of a frontend to interact with an [Ada](https://ada.cx) AI Agent via the Ada Conversations API.
 
-To learn more about Ada's Conversations API visit the [developer docs](https://developers.ada.cx/reference/conversations/overview).
+The Conversations API is currently in Early Access (EAP). To join the Early Access Program and start building your own demo prototype, contact your Ada representative.
 
 # How to Run this Demo
 

@@ -23,7 +23,7 @@ def _colorize(status_code: int, text: str) -> str:
 
 
 async def send_user_message(
-    conversation_id: str, user_id: str, display_name: str, text: str
+    conversation_id: str, user_id: str, display_name: str, avatar: str, text: str
 ):
     """Send an end user message to Ada"""
 
@@ -37,7 +37,7 @@ async def send_user_message(
                     "role": "end_user",
                     "display_name": display_name,
                     "id": user_id,
-                    "avatar": "https://gravatar.com",
+                    "avatar": avatar,
                 },
                 "content": {"type": "text", "body": text},
             },
@@ -79,23 +79,6 @@ async def end_conversation(conversation_id: str):
         async with session.post(
             f"{ADA_BASE_URL}/api/v2/conversations/{conversation_id}/end",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
-        ) as response:
-            body = await response.json()
-            print(_colorize(response.status, json.dumps(body)))
-
-            response.raise_for_status()
-
-
-async def update_user(end_user_id: str, first_name: str, last_name: str):
-    """Update an end user's display name"""
-
-    print("Updating end user...")
-
-    async with aiohttp.ClientSession() as session:
-        async with session.patch(
-            f"{ADA_BASE_URL}/api/v2/end-users/{end_user_id}",
-            headers={"Authorization": f"Bearer {ADA_API_KEY}"},
-            json={"profile": {"first_name": first_name, "last_name": last_name}},
         ) as response:
             body = await response.json()
             print(_colorize(response.status, json.dumps(body)))

@@ -8,15 +8,18 @@ class Message:
     text: str
     user_id: str | None = None
     name: str | None = None
+    avatar: str | None = None
 
     @property
     def display_name(self):
-        if self.role == "ada_ai_agent":
-            return "AI Agent"
+        if self.role == "ai_agent":
+            default_name = "AI Agent"
         elif self.role == "human_agent":
-            return "Human Agent"
+            default_name = "Human Agent"
         else:
-            return f"{self.name or "End User"} ({self.user_id or self.role})"
+            default_name = "End User"
+
+        return f"{self.name or default_name} ({self.user_id or self.role})"
 
 
 @dataclass
@@ -39,12 +42,12 @@ class ChatUI:
         with ui.scroll_area().classes("flex-1") as chat_scroll:
             with ui.column().classes("w-full items-stretch"):
                 for m in self._messages:
-                    ui.chat_message(text=m.text, sent=(m.user_id == self.active_end_user_id), name=m.display_name)
+                    ui.chat_message(text=m.text, sent=(m.user_id == self.active_end_user_id), name=m.display_name, avatar=m.avatar)
 
         chat_scroll.scroll_to(percent=100)
 
-    def add_message(self, user_id: str | None, role: str, text: str, name: str | None = None):
-        self._messages.append(Message(role, text, user_id, name))
+    def add_message(self, user_id: str | None, role: str, text: str, name: str | None = None, avatar: str | None = None):
+        self._messages.append(Message(role, text, user_id, name, avatar))
         self.message_list_element.refresh()
 
     def send_notification(self, text: str):

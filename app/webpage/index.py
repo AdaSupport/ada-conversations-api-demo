@@ -18,7 +18,7 @@ def _generate_name() -> str:
 async def index():
     async def _send():
         text_value = text_input.value
-        chat_ui.add_message(user_id, "end_user", text_value, display_name)
+        chat_ui.add_message(user_id, "end_user", text_value, display_name, avatar)
         text_input.value = ""
         await ada_api.send_user_message(conversation_id, user_id, display_name, avatar, text_value)
 

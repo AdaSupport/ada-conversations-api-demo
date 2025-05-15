@@ -112,10 +112,12 @@ async def batch_process_messages():
             msg.data.author.role,
             msg.data.content.type,
             msg.data.content.body,
+            msg.data.author.display_name,
+            msg.data.author.avatar,
         )
 
 
-def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, msg_type: str, text: str):
+def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, msg_type: str, text: str, display_name: str | None = None, avatar: str | None = None):
     """Convert a message from Ada's webhook to one that is displayed in the chat UI"""
 
     chat_ui = get_chat_ui(conversation_id)
@@ -123,6 +125,6 @@ def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, m
         return
 
     if msg_type == "text":
-        chat_ui.add_message(user_id, role, text)
+        chat_ui.add_message(user_id, role, text, display_name, avatar)
     elif msg_type == "presence":
         chat_ui.send_notification(text)

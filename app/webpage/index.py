@@ -18,9 +18,9 @@ def _generate_name() -> str:
 async def index():
     async def _send():
         text_value = text_input.value
-        chat_ui.add_message(user_id, "end_user", text_value, display_name)
+        chat_ui.add_message(user_id, "end_user", text_value, display_name, avatar)
         text_input.value = ""
-        await ada_api.send_user_message(conversation_id, user_id, display_name, text_value)
+        await ada_api.send_user_message(conversation_id, user_id, display_name, avatar, text_value)
 
     async def _end_chat():
         text_input.value = ""
@@ -35,6 +35,7 @@ async def index():
 
     user_id = app.storage.user.get("end_user_id")
     display_name = app.storage.user.get("display_name", _generate_name())
+    avatar = "https://upload.wikimedia.org/wikipedia/commons/0/09/.hecko_-_Floaty_-_profile_picture.svg"
 
     user_id, conversation_id = await ada_api.start_new_conversation(user_id)
 
@@ -56,5 +57,3 @@ async def index():
         )
         end_button = ui.button("End Chat", on_click=_end_chat, color="red", icon="exit_to_app")
         ui.button("Reset", on_click=_reset, color="blue", icon="refresh")
-
-    await ada_api.update_user(user_id, *display_name.split())

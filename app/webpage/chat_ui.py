@@ -42,7 +42,11 @@ class ChatUI:
         with ui.scroll_area().classes("flex-1") as chat_scroll:
             with ui.column().classes("w-full items-stretch"):
                 for m in self._messages:
-                    ui.chat_message(text=m.text, sent=(m.user_id == self.active_end_user_id), name=m.display_name, avatar=m.avatar)
+                    msg_bubble = ui.chat_message(text=m.text, sent=(m.user_id == self.active_end_user_id), name=m.display_name, avatar=m.avatar)
+                    if m.role == "ai_agent":
+                        msg_bubble.props("bg-color=blue-3")
+                    elif m.role == "human_agent":
+                        msg_bubble.props("bg-color=green-3")
 
         chat_scroll.scroll_to(percent=100)
 

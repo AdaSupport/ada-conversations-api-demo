@@ -2,6 +2,7 @@ import random
 from nicegui import ui, APIRouter, app
 
 from app import ada_api
+from app.data.messages import TextContent
 from app.webpage.chat_ui import ChatUI
 
 
@@ -18,7 +19,7 @@ def _generate_name() -> str:
 async def index():
     async def _send():
         text_value = text_input.value
-        chat_ui.add_message(user_id, "end_user", text_value, display_name, avatar)
+        chat_ui.add_message(user_id, "end_user", TextContent(body=text_value), display_name, avatar)
         text_input.value = ""
         await ada_api.send_user_message(conversation_id, user_id, display_name, avatar, text_value)
 

@@ -1,11 +1,14 @@
 from dataclasses import dataclass
+
 from nicegui import ui
+
+from app.data.messages import LinkContent, MessageContent, TextContent
 
 
 @dataclass
 class Message:
     role: str
-    text: str
+    content: MessageContent
     user_id: str | None = None
     name: str | None = None
     avatar: str | None = None
@@ -42,16 +45,22 @@ class ChatUI:
         with ui.scroll_area().classes("flex-1") as chat_scroll:
             with ui.column().classes("w-full items-stretch"):
                 for m in self._messages:
-                    msg_bubble = ui.chat_message(text=m.text, sent=(m.user_id == self.active_end_user_id), name=m.display_name, avatar=m.avatar)
+                    bubble_text = m.content.body if isinstance(m.content, TextContent) else []
+
+                    chat_msg = ui.chat_message(text=bubble_text, sent=(m.user_id == self.active_end_user_id), name=m.display_name, avatar=m.avatar)
+                    if isinstance(m.content, LinkContent):
+                        with chat_msg:
+                            ui.link(text=m.content.link_text or m.content.url, target=m.content.url, new_tab=True)
+
                     if m.role == "ai_agent":
-                        msg_bubble.props("bg-color=blue-3")
+                        chat_msg.props("bg-color=green-3")
                     elif m.role == "human_agent":
-                        msg_bubble.props("bg-color=green-3")
+                        chat_msg.props("bg-color=blue-3")
 
         chat_scroll.scroll_to(percent=100)
 
-    def add_message(self, user_id: str | None, role: str, text: str, name: str | None = None, avatar: str | None = None):
-        self._messages.append(Message(role, text, user_id, name, avatar))
+    def add_message(self, user_id: str | None, role: str, content: MessageContent, name: str | None = None, avatar: str | None = None):
+        self._messages.append(Message(role, content, user_id, name, avatar))
         self.message_list_element.refresh()
 
     def send_notification(self, text: str):

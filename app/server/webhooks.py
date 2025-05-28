@@ -8,6 +8,7 @@ from nicegui import APIRouter
 from pydantic import BaseModel
 import svix
 
+from app.data.messages import LinkContent, MessageContent, TextContent
 from app.webpage.chat_ui import get_chat_ui
 
 dotenv.load_dotenv()
@@ -21,18 +22,13 @@ class PostMessageAuthor(BaseModel):
     id: str | None
 
 
-class PostMessageContent(BaseModel):
-    body: str
-    type: str
-
-
 class PostMessageData(BaseModel):
     message_id: str
     conversation_id: str
     channel_id: str
     created_at: datetime
     author: PostMessageAuthor
-    content: PostMessageContent
+    content: TextContent | LinkContent
 
 
 class PostMessageRequest(BaseModel):
@@ -110,21 +106,20 @@ async def batch_process_messages():
             msg.data.conversation_id,
             msg.data.author.id,
             msg.data.author.role,
-            msg.data.content.type,
-            msg.data.content.body,
+            msg.data.content,
             msg.data.author.display_name,
             msg.data.author.avatar,
         )
 
 
-def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, msg_type: str, text: str, display_name: str | None = None, avatar: str | None = None):
+def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, content: MessageContent, display_name: str | None = None, avatar: str | None = None):
     """Convert a message from Ada's webhook to one that is displayed in the chat UI"""
 
     chat_ui = get_chat_ui(conversation_id)
     if not chat_ui or user_id == chat_ui.active_end_user_id:
         return
 
-    if msg_type == "text":
-        chat_ui.add_message(user_id, role, text, display_name, avatar)
-    elif msg_type == "presence":
-        chat_ui.send_notification(text)
+    if content.type == "presence":
+        chat_ui.send_notification(content.body)
+    else:
+        chat_ui.add_message(user_id, role, content, display_name, avatar)

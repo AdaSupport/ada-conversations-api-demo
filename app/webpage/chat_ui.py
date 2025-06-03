@@ -29,6 +29,9 @@ class Message:
 class ChatUI:
     active_end_user_id: str
     active_conversation_id: str
+    _text_input: ui.input | None = None
+    _end_button: ui.button | None = None
+    _reset_button: ui.button | None = None
 
     def __post_init__(self) -> None:
         self._messages: list[Message] = []
@@ -58,6 +61,38 @@ class ChatUI:
                         chat_msg.props("bg-color=blue-3")
 
         chat_scroll.scroll_to(percent=100)
+
+    @property
+    def text_input(self) -> ui.input:
+        if self._text_input is None:
+            self._text_input = ui.input(placeholder="Type a message...").props("outlined").classes("flex-grow")
+        return self._text_input
+
+    @property
+    def end_button(self) -> ui.button:
+        if self._end_button is None:
+            self._end_button = ui.button("End Chat", color="red", icon="exit_to_app")
+        return self._end_button
+
+    @property
+    def reset_button(self) -> ui.button:
+        if self._reset_button is None:
+            self._reset_button = ui.button("Reset", color="blue", icon="refresh")
+        return self._reset_button
+
+    def chat_footer(self) -> ui.row:
+        footer = ui.row().classes("h-12 w-full items-stretch")
+        with footer:
+            self.text_input
+            self.end_button
+            self.reset_button
+        return footer
+
+    def disable_chat_inputs(self):
+        self.text_input.value = ""
+        self.text_input._props["placeholder"] = "Conversation has ended"
+        self.text_input.disable()
+        self.end_button.disable()
 
     def add_message(self, user_id: str | None, role: str, content: MessageContent, name: str | None = None, avatar: str | None = None):
         self._messages.append(Message(role, content, user_id, name, avatar))

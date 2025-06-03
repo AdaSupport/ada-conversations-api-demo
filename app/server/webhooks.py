@@ -37,6 +37,23 @@ class PostMessageRequest(BaseModel):
     timestamp: datetime
 
 
+class EndedBy(BaseModel):
+    id: str | None
+    role: str
+
+
+class EndConversationData(BaseModel):
+    conversation_id: str
+    channel_id: str
+    ended_by: EndedBy
+
+
+class EndConversationRequest(BaseModel):
+    type: Literal["v1.conversation.end"]
+    data: EndConversationData
+    timestamp: datetime
+
+
 class GenericEventRequest(BaseModel):
     type: str
     data: dict[str, Any]
@@ -50,7 +67,7 @@ _global_batch_lock = asyncio.Lock()
 
 
 @router.post("/message", status_code=204)
-async def post_message(msg: PostMessageRequest | GenericEventRequest, request: Request):
+async def post_message(msg: PostMessageRequest | EndConversationRequest | GenericEventRequest, request: Request):
     print(f"\033[94mReceived webhook: {msg.model_dump_json()}\033[0m")
 
     headers = request.headers
@@ -65,8 +82,10 @@ async def post_message(msg: PostMessageRequest | GenericEventRequest, request: R
 
     if isinstance(msg, PostMessageRequest):
         await push_message_to_queue(msg)
-
-    return None
+    elif isinstance(msg, EndConversationRequest):
+        chat_ui = get_chat_ui(msg.data.conversation_id)
+        if chat_ui:
+            chat_ui.disable_chat_inputs()
 
 
 async def push_message_to_queue(msg: PostMessageRequest):

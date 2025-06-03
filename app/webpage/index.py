@@ -18,16 +18,13 @@ def _generate_name() -> str:
 @router.page("/")
 async def index():
     async def _send():
-        text_value = text_input.value
+        text_value = chat_ui.text_input.value
         chat_ui.add_message(user_id, "end_user", TextContent(body=text_value), display_name, avatar)
-        text_input.value = ""
+        chat_ui.text_input.value = ""
         await ada_api.send_user_message(conversation_id, user_id, display_name, avatar, text_value)
 
     async def _end_chat():
-        text_input.value = ""
-        text_input._props["placeholder"] = "Conversation has ended"
-        text_input.disable()
-        end_button.disable()
+        chat_ui.disable_chat_inputs()
         await ada_api.end_conversation(conversation_id)
 
     async def _reset():
@@ -48,13 +45,7 @@ async def index():
     chat_ui.notifier_element()
     chat_ui.message_list_element()
 
-    footer = ui.row().classes("h-12 w-full items-stretch")
-    with footer:
-        text_input = (
-            ui.input(placeholder="Type a message...")
-            .props("outlined")
-            .classes("flex-grow")
-            .on("keydown.enter", _send)
-        )
-        end_button = ui.button("End Chat", on_click=_end_chat, color="red", icon="exit_to_app")
-        ui.button("Reset", on_click=_reset, color="blue", icon="refresh")
+    with chat_ui.chat_footer():
+        chat_ui.text_input.on("keydown.enter", _send)
+        chat_ui.end_button.on_click(_end_chat)
+        chat_ui.reset_button.on_click(_reset)

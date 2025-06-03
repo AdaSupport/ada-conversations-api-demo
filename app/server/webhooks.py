@@ -49,7 +49,7 @@ class EndConversationData(BaseModel):
 
 
 class EndConversationRequest(BaseModel):
-    type: Literal["v1.conversation.end"]
+    type: Literal["v1.conversation.ended"]
     data: EndConversationData
     timestamp: datetime
 

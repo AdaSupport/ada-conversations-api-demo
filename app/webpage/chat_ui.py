@@ -50,7 +50,7 @@ class ChatUI:
                     chat_msg = ui.chat_message(text=bubble_text, sent=(m.user_id == self.active_end_user_id), name=m.display_name, avatar=m.avatar)
                     if isinstance(m.content, LinkContent):
                         with chat_msg:
-                            ui.link(text=m.content.link_text or m.content.url, target=m.content.url, new_tab=True)
+                            ui.button(m.content.link_text or "Click this link", on_click=lambda: ui.navigate.to(m.content.url, new_tab=True))
 
                     if m.role == "ai_agent":
                         chat_msg.props("bg-color=green-3")

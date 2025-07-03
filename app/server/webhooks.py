@@ -22,10 +22,21 @@ class PostMessageAuthor(BaseModel):
     id: str | None
 
 
+class PostMessageChannel(BaseModel):
+    id: str
+    type: str | None
+    name: str
+    description: str
+    modality: str
+    metadata: dict[str, str | bool | int] | None
+    created_at: datetime | None
+
+
 class PostMessageData(BaseModel):
     message_id: str
     conversation_id: str
     channel_id: str
+    channel: PostMessageChannel
     created_at: datetime
     author: PostMessageAuthor
     content: TextContent | LinkContent
@@ -59,6 +70,7 @@ class GenericEventRequest(BaseModel):
     data: dict[str, Any]
     timestamp: datetime
 
+
 router = APIRouter(prefix="/webhooks", tags=["webhooks"])
 
 _global_msg_queue: list[PostMessageRequest] = []
@@ -67,7 +79,10 @@ _global_batch_lock = asyncio.Lock()
 
 
 @router.post("/message", status_code=204)
-async def post_message(msg: PostMessageRequest | EndConversationRequest | GenericEventRequest, request: Request):
+async def post_message(
+    msg: PostMessageRequest | EndConversationRequest | GenericEventRequest,
+    request: Request,
+):
     print(f"\033[94mReceived webhook: {msg.model_dump_json()}\033[0m")
 
     headers = request.headers
@@ -131,7 +146,14 @@ async def batch_process_messages():
         )
 
 
-def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, content: MessageContent, display_name: str | None = None, avatar: str | None = None):
+def push_message_to_chat(
+    conversation_id: str,
+    user_id: str | None,
+    role: str,
+    content: MessageContent,
+    display_name: str | None = None,
+    avatar: str | None = None,
+):
     """Convert a message from Ada's webhook to one that is displayed in the chat UI"""
 
     chat_ui = get_chat_ui(conversation_id)

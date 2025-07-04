@@ -24,7 +24,7 @@ class PostMessageAuthor(BaseModel):
 
 class PostMessageChannel(BaseModel):
     id: str
-    type: str | None
+    type: str
     name: str
     description: str
     modality: str
@@ -35,7 +35,6 @@ class PostMessageChannel(BaseModel):
 class PostMessageData(BaseModel):
     message_id: str
     conversation_id: str
-    channel_id: str
     channel: PostMessageChannel
     created_at: datetime
     author: PostMessageAuthor

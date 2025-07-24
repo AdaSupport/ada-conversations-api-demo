@@ -15,6 +15,16 @@ dotenv.load_dotenv()
 WEBHOOK_SECRET = os.environ["WEBHOOK_SECRET"]
 
 
+class PostMessageChannel(BaseModel):
+    id: str
+    name: str
+    type: str
+    modality: str
+    description: str
+    metadata: dict[str, Any] | None = None
+    created_at: datetime | None = None
+
+
 class PostMessageAuthor(BaseModel):
     display_name: str | None
     role: str
@@ -25,7 +35,7 @@ class PostMessageAuthor(BaseModel):
 class PostMessageData(BaseModel):
     message_id: str
     conversation_id: str
-    channel_id: str
+    channel: PostMessageChannel
     created_at: datetime
     author: PostMessageAuthor
     content: TextContent | LinkContent
@@ -86,6 +96,8 @@ async def post_message(msg: PostMessageRequest | EndConversationRequest | Generi
         chat_ui = get_chat_ui(msg.data.conversation_id)
         if chat_ui:
             chat_ui.disable_chat_inputs()
+    else:
+        print(f"\033[90mWebhook failed to parse or received unsupported type: {msg.type}\033[0m")
 
 
 async def push_message_to_queue(msg: PostMessageRequest):

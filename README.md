@@ -84,6 +84,29 @@ WEBHOOK_SECRET=signing-secret-from-endpoint-you-just-added
 
 The `ADA_BASE_URL` should be the entire URL to your Ada AI Agent - so something like `https://lovelace.ada.support`
 
+## Zendesk Integration (EXTN-476 Demo)
+
+This demo includes a Zendesk integration that automatically creates tickets when bot conversations end, demonstrating immediate customer follow-up instead of needing to waiting for 24-hour timeout.
+
+### Configuration
+
+Add these environment variables to your `.env` file to enable Zendesk integration:
+
+```bash
+# Zendesk Integration (Optional)
+ZENDESK_AUTO_TICKET_ENABLED=true
+ZENDESK_SUBDOMAIN=your-zendesk-subdomain  
+ZENDESK_EMAIL=admin@yourcompany.com
+ZENDESK_API_TOKEN=your-zendesk-api-token
+ZENDESK_AUTO_TICKET_TAG=ada-bot-conversation
+```
+
+### Demo Flow
+1. Customer starts conversation → chats with bot → clicks "End Chat" 
+2. Ada fires `v1.conversation.ended` webhook → Demo creates Zendesk ticket
+3. Customer sees notification: "Follow-up ticket #12345 created"
+4. Agent sees new ticket in Zendesk with correct conversation context
+
 ## Running It
 
 Finally, you can run the demo app dashboard by running

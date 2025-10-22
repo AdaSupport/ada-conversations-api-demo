@@ -82,6 +82,8 @@ WEBHOOK_SECRET=signing-secret-from-endpoint-you-just-added
 
 The `ADA_BASE_URL` should be the entire URL to your Ada AI Agent - so something like `https://lovelace.ada.support`
 
+The `WEBHOOK_SECRET` should be the **signing secret** for the created webhook on your ADA's dashboard. The secret has the following prefix `whsec_` 
+
 ## Running It
 
 Finally, you can run the demo app dashboard by running

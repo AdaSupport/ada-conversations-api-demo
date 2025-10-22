@@ -89,7 +89,7 @@ async def post_message(msg: PostMessageRequest | EndConversationRequest | Generi
         # Alternatively you can follow these docs for manual signature verification: https://docs.svix.com/receiving/verifying-payloads/how-manual
         webhook = svix.Webhook(WEBHOOK_SECRET)
         webhook.verify(payload, cast(dict[str, str], headers))
-    except svix.WebhookVerificationError as e:
+    except svix.WebhookVerificationError as e:        
         raise HTTPException(status_code=400, detail="Bad Request") from e
 
     if isinstance(msg, PostMessageRequest):

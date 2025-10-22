@@ -35,7 +35,7 @@ class PostMessageAuthor(BaseModel):
 class PostMessageData(BaseModel):
     message_id: str
     conversation_id: str
-    end_user_id: str | None
+    end_user_id: str
     channel: PostMessageChannel
     created_at: datetime
     author: PostMessageAuthor
@@ -56,7 +56,7 @@ class EndedBy(BaseModel):
 class EndConversationData(BaseModel):
     conversation_id: str
     channel_id: str
-    end_user_id: str | None
+    end_user_id: str
     ended_by: EndedBy
 
 

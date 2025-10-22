@@ -34,7 +34,9 @@ class ChatUI:
     _reset_button: ui.button | None = None
 
     def __post_init__(self) -> None:
+        from nicegui import context
         self._messages: list[Message] = []
+        self._client = context.client  # Store client context for background tasks
         register_chat_ui(self)
 
     @ui.refreshable
@@ -102,6 +104,23 @@ class ChatUI:
     def send_notification(self, text: str):
         self.notifier_element.refresh(text)
 
+    def send_browser_notification(self, title: str, body: str):
+        """Send a browser notification that works even when tab is not active"""
+        safe_title = title.replace('"', '\\"').replace("'", "\\'")
+        safe_body = body.replace('"', '\\"').replace("'", "\\'")
+        
+        # Use stored client context to send JavaScript from background tasks
+        self._client.run_javascript(f'''
+            if ("Notification" in window && Notification.permission === "granted") {{
+                new Notification("{safe_title}", {{
+                    body: "{safe_body}",
+                    icon: "https://upload.wikimedia.org/wikipedia/commons/0/09/.hecko_-_Floaty_-_profile_picture.svg",
+                    tag: "human-agent-notification",
+                    requireInteraction: false
+                }});
+            }}
+        ''')
+
 
 _registered_chats: dict[str, ChatUI] = {}
 
@@ -124,3 +143,4 @@ def unregister_chat_ui(conversation_id: str):
     global _registered_chats
     if conversation_id in _registered_chats:
         del _registered_chats[conversation_id]
+

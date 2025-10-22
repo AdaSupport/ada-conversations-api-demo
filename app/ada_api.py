@@ -1,5 +1,6 @@
 import json
 import os
+import ssl
 import aiohttp
 import dotenv
 
@@ -28,7 +29,13 @@ async def send_user_message(
     """Send an end user message to Ada"""
 
     print("Sending message...")
-    async with aiohttp.ClientSession() as session:
+    # Create SSL context that doesn't verify certificates (for development)
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+    
+    connector = aiohttp.TCPConnector(ssl=ssl_context)
+    async with aiohttp.ClientSession(connector=connector) as session:
         async with session.post(
             f"{ADA_BASE_URL}/api/v2/conversations/{conversation_id}/messages",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
@@ -57,7 +64,13 @@ async def start_new_conversation(user_id: str | None = None):
         print("...with end_user_id....")
         request_body["end_user_id"] = user_id
 
-    async with aiohttp.ClientSession() as session:
+    # Create SSL context that doesn't verify certificates (for development)
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+    
+    connector = aiohttp.TCPConnector(ssl=ssl_context)
+    async with aiohttp.ClientSession(connector=connector) as session:
         async with session.post(
             f"{ADA_BASE_URL}/api/v2/conversations",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
@@ -75,7 +88,13 @@ async def end_conversation(conversation_id: str):
     """End a conversation with Ada"""
 
     print("Ending conversation...")
-    async with aiohttp.ClientSession() as session:
+    # Create SSL context that doesn't verify certificates (for development)
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+    
+    connector = aiohttp.TCPConnector(ssl=ssl_context)
+    async with aiohttp.ClientSession(connector=connector) as session:
         async with session.post(
             f"{ADA_BASE_URL}/api/v2/conversations/{conversation_id}/end",
             headers={"Authorization": f"Bearer {ADA_API_KEY}"},
@@ -84,3 +103,5 @@ async def end_conversation(conversation_id: str):
             print(_colorize(response.status, json.dumps(body)))
 
             response.raise_for_status()
+
+

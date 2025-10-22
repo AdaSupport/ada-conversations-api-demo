@@ -41,6 +41,13 @@ async def index():
     app.storage.user["display_name"] = display_name
     ui.query('.nicegui-content').classes("h-screen flex flex-col w-full")
 
+    # Request browser notification permissions
+    ui.run_javascript('''
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+    ''')
+
     chat_ui = ChatUI(user_id, conversation_id)
     chat_ui.notifier_element()
     chat_ui.message_list_element()
@@ -49,3 +56,4 @@ async def index():
         chat_ui.text_input.on("keydown.enter", _send)
         chat_ui.end_button.on_click(_end_chat)
         chat_ui.reset_button.on_click(_reset)
+

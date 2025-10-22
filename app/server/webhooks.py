@@ -153,4 +153,11 @@ def push_message_to_chat(conversation_id: str, user_id: str | None, role: str, c
     if content.type == "presence":
         chat_ui.send_notification(content.body)
     else:
+        if role == "human_agent":
+            chat_ui.send_browser_notification(
+                title="Human Agent Response",
+                body=content.body
+            )
+        
         chat_ui.add_message(user_id, role, content, display_name, avatar)
+
